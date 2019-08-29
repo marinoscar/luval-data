@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 
 namespace luval.data
 {
@@ -355,10 +356,20 @@ namespace luval.data
             var entity = Activator.CreateInstance(type);
             for (int i = 0; i < record.FieldCount; i++)
             {
-                var p = type.GetProperty(record.GetName(i));
+                var p = GetEntityPropertyFromFieldName(record.GetName(i), type);
                 p.SetValue(entity, Convert.ChangeType(record.GetValue(i), p.PropertyType));
             }
             return ((T)entity);
+        }
+
+        private PropertyInfo GetEntityPropertyFromFieldName(string name, Type type)
+        {
+            var prop = type.GetProperty(name);
+            if (prop != null) return prop;
+            var att = type.GetCustomAttribute(typeof(ColumnNameAttribute));
+            if (att == null) return null;
+            prop = type.GetProperty(((ColumnNameAttribute)att).Name);
+            return prop;
         }
 
         private void LoadRecordIntoDictionaryList(List<Dictionary<string, object>> recordSet, IDataRecord row)
