@@ -28,8 +28,9 @@ namespace luval.data
         public string GetCreateCommand()
         {
             var sw = new StringWriter();
-            sw.WriteLine("INSERT INTO {0} ({1}) VALUES ({2});", Schema.TableName,
+            sw.WriteLine("INSERT ({0}) INTO {1} VALUES ({2});",
                 string.Join(", ", GetSqlFormattedColumnNames((i) => !i.IsIdentity)),
+                GetSqlFormattedTableName(),
                 string.Join(", ", GetSqlInserValues()));
             return sw.ToString();
         }
@@ -37,7 +38,7 @@ namespace luval.data
         public string GetDeleteCommand()
         {
             var sw = new StringWriter();
-            sw.WriteLine("DELETE FROM {0} WHERE {1};", Schema.TableName,
+            sw.WriteLine("DELETE FROM {0} WHERE {1};", GetSqlFormattedTableName(),
                 string.Join(" AND ", GetKeyWhereStatement()));
             return sw.ToString();
         }
@@ -45,8 +46,8 @@ namespace luval.data
         public string GetUpdateCommand()
         {
             var sw = new StringWriter();
-            sw.WriteLine("UPDATE {0} SET {1} WHERE {2}", Schema.TableName,
-                string.Join(" AND ", GetUpdateValueStatement()),
+            sw.WriteLine("UPDATE {0} SET {1} WHERE {2};", GetSqlFormattedTableName(),
+                string.Join(", ", GetUpdateValueStatement()),
                 string.Join(" AND ", GetKeyWhereStatement()));
             return sw.ToString();
         }
@@ -54,23 +55,23 @@ namespace luval.data
         public string GetReadCommand()
         {
             var sw = new StringWriter();
-            sw.WriteLine("SELECT {0} FROM {1} WHERE {2}",
+            sw.WriteLine("SELECT {0} FROM {1} WHERE {2};",
                 string.Join(", ", GetSqlFormattedColumnNames((i) => true)),
-                Schema.TableName,
+                GetSqlFormattedTableName(),
                 string.Join(" AND ", GetKeyWhereStatement()));
             return sw.ToString();
         }
 
         private IEnumerable<string> GetUpdateValueStatement()
         {
-            return GetColumnValuePair(i => !i.Item1.IsPrimaryKey && i.Item2 != null);
+            return GetColumnValuePair(i => !i.Item1.IsPrimaryKey && i.Item3 != null);
         }
 
         private IEnumerable<string> GetKeyWhereStatement()
         {
             if (!Schema.Columns.Any(i => i.IsPrimaryKey))
                 throw new InvalidDataException("At least one primary key column is required");
-            return GetColumnValuePair(i => i.Item1.IsPrimaryKey && i.Item2 != null);
+            return GetColumnValuePair(i => i.Item1.IsPrimaryKey && i.Item3 != null);
         }
 
         private IEnumerable<string> GetColumnValuePair(Func<Tuple<SqlColumnSchema, object, PropertyInfo>, bool> predicate)
@@ -78,8 +79,8 @@ namespace luval.data
             return GetEntityValues().Where(predicate)
                 .Select(i =>
                 {
-                    var res = string.Format("{0} = {1}", GetSqlFormattedColumnName(i.Item1), i.Item1);
-                    if (i.IsNullOrDbNull()) res = string.Format("{0} IS NULL", GetSqlFormattedColumnName(i.Item1));
+                    var res = string.Format("{0} = {1}", GetSqlFormattedColumnName(i.Item1), i.Item2.ToSql());
+                    if (i.Item2.IsNullOrDbNull()) res = string.Format("{0} IS NULL", GetSqlFormattedColumnName(i.Item1));
                     return res;
                 }).ToList();
         }
@@ -87,7 +88,7 @@ namespace luval.data
         private IEnumerable<string> GetSqlInserValues()
         {
             return GetEntityValues().Where(i => !i.Item1.IsIdentity && i.Item2 != null)
-                .Select(i => i.Item3.ToSql()).ToList();
+                .Select(i => i.Item2.ToSql()).ToList();
         }
 
         private IEnumerable<Tuple<SqlColumnSchema, object, PropertyInfo>> GetEntityValues()
@@ -102,6 +103,11 @@ namespace luval.data
                 res.Add(new Tuple<SqlColumnSchema, object, PropertyInfo>(col, obj, prop));
             }
             return res;
+        }
+
+        private string GetSqlFormattedTableName()
+        {
+            return string.Format("[{0}]", Schema.TableName);
         }
 
         private string GetSqlFormattedColumnName(SqlColumnSchema columnSchema)

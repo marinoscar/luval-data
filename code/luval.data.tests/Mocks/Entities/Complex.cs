@@ -7,7 +7,7 @@ namespace luval.data.tests.Mocks.Entities
     [TableName("ComplextTable")]
     public class Complex
     {
-        [ColumnName("ComplexId")]
+        [ColumnName("ComplexId"), IdentityColumn, PrimaryKey]
         public int Id { get; set; }
         [ColumnName("ComplexName")]
         public string Name { get; set; }
