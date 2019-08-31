@@ -364,12 +364,15 @@ namespace luval.data
 
         private PropertyInfo GetEntityPropertyFromFieldName(string name, Type type)
         {
-            var prop = type.GetProperty(name);
-            if (prop != null) return prop;
-            var att = type.GetCustomAttribute(typeof(ColumnNameAttribute));
-            if (att == null) return null;
-            prop = type.GetProperty(((ColumnNameAttribute)att).Name);
-            return prop;
+            var property = type.GetProperty(name);
+            if (property != null) return property;
+            foreach(var prop in type.GetProperties())
+            {
+                var att = prop.GetCustomAttribute(typeof(ColumnNameAttribute));
+                if (att == null) continue;
+                if (((ColumnNameAttribute)att).Name == name) return prop;
+            }
+            return null;
         }
 
         private void LoadRecordIntoDictionaryList(List<Dictionary<string, object>> recordSet, IDataRecord row)
