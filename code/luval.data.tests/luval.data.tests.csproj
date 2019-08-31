@@ -57,6 +57,7 @@
     <Compile Include="Mocks\Entities\Simple.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="When_Entities_Are_Being_Map.cs" />
+    <Compile Include="When_SqlTableSchema_Is_Loaded.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
