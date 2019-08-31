@@ -357,6 +357,7 @@ namespace luval.data
             for (int i = 0; i < record.FieldCount; i++)
             {
                 var p = GetEntityPropertyFromFieldName(record.GetName(i), type);
+                if (p == null) continue;
                 p.SetValue(entity, Convert.ChangeType(record.GetValue(i), p.PropertyType));
             }
             return ((T)entity);
