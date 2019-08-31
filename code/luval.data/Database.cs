@@ -366,10 +366,15 @@ namespace luval.data
         private PropertyInfo GetEntityPropertyFromFieldName(string name, Type type)
         {
             var property = type.GetProperty(name);
-            if (property != null) return property;
-            foreach(var prop in type.GetProperties())
+            if (property != null)
             {
-                var att = prop.GetCustomAttribute(typeof(ColumnNameAttribute));
+                if (property.GetCustomAttribute<NotMappedAttribute>() != null) return null;
+                return property;
+            }
+            foreach (var prop in type.GetProperties())
+            {
+                if (prop.GetCustomAttribute<NotMappedAttribute>() != null) continue;
+                var att = prop.GetCustomAttribute<ColumnNameAttribute>();
                 if (att == null) continue;
                 if (((ColumnNameAttribute)att).Name == name) return prop;
             }
@@ -429,7 +434,7 @@ namespace luval.data
                 }
             if (timeout > 0) cmd.CommandTimeout = timeout;
             else cmd.CommandTimeout = cmd.Connection.ConnectionTimeout;
-        } 
+        }
 
         #endregion
     }

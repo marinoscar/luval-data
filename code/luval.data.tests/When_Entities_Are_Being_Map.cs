@@ -103,5 +103,35 @@ namespace luval.data.tests
             Assert.AreEqual(entity.Value, res.Single().Value);
             Assert.AreEqual(entity.UpdatedOn, res.Single().UpdatedOn);
         }
+
+        [Test]
+        public void It_Should_Not_Map_Fields_That_Have_The_NotMapped_Attribute()
+        {
+            var entity = new Complex()
+            {
+                Id = new Random().Next(),
+                Name = "Sample Text",
+                Value = new Random().NextDouble(),
+                UpdatedOn = DateTime.Today,
+                DoNotMap = "Do Not Map",
+                DoNotMap2 = "Do Not Map2"
+            };
+            var record = new DictionaryDataRecord(new Dictionary<string, object>() {
+                { "Id", entity.Id },
+                { "Name", entity.Name },
+                { "Value", entity.Value },
+                { "UpdatedOn", entity.UpdatedOn },
+                { "DoNotMap", entity.DoNotMap },
+                { "ComplexDoNotMapped2", entity.DoNotMap2 },
+            });
+            var db = new Database(() => new MConnection() { Records = new List<IDataRecord>(new[] { record }) });
+            var res = db.ExecuteToEntityList<Complex>("");
+            Assert.AreEqual(default(string), res.Single().DoNotMap);
+            Assert.AreEqual(default(string), res.Single().DoNotMap2);
+            Assert.AreEqual(entity.Id, res.Single().Id);
+            Assert.AreEqual(entity.Name, res.Single().Name);
+            Assert.AreEqual(entity.Value, res.Single().Value);
+            Assert.AreEqual(entity.UpdatedOn, res.Single().UpdatedOn);
+        }
     }
 }

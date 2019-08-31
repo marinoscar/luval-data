@@ -15,5 +15,9 @@ namespace luval.data.tests.Mocks.Entities
         public double Value { get; set; }
         [ColumnName("ComplexUpdatedOn")]
         public DateTime UpdatedOn { get; set; }
+        [NotMapped]
+        public string DoNotMap { get; set; }
+        [NotMapped, ColumnName("ComplexDoNotMapped2")]
+        public string DoNotMap2 { get; set; }
     }
 }
