@@ -1,12 +1,13 @@
 ﻿namespace luval.data
 {
-    public interface ISqlDialectProvider
+    public interface ISqlDialectProvider<T>
     {
-        object Entity { get; }
+        T Entity { get; }
         SqlTableSchema Schema { get; }
         string GetCreateCommand();
         string GetReadCommand();
         string GetUpdateCommand();
         string GetDeleteCommand();
+        string GetReadAllCommand();
     }
 }

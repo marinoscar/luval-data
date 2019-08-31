@@ -8,22 +8,22 @@ using System.Text;
 
 namespace luval.data
 {
-    public class SqlServerDialectProvider : ISqlDialectProvider
+    public class SqlServerDialectProvider<T> : ISqlDialectProvider<T>
     {
 
-        public SqlServerDialectProvider(object entity): this(entity, SqlTableSchema.Load(entity.GetType()))
+        public SqlServerDialectProvider(T entity): this(entity, SqlTableSchema.Load(entity.GetType()))
         {
 
         }
 
-        public SqlServerDialectProvider(object entity, SqlTableSchema schema)
+        public SqlServerDialectProvider(T entity, SqlTableSchema schema)
         {
             Schema = schema;
             Entity = entity;
         }
 
         public SqlTableSchema Schema { get; private set; }
-        public object Entity { get; private set; }
+        public T Entity { get; private set; }
 
         public string GetCreateCommand()
         {
@@ -59,6 +59,15 @@ namespace luval.data
                 string.Join(", ", GetSqlFormattedColumnNames((i) => true)),
                 GetSqlFormattedTableName(),
                 string.Join(" AND ", GetKeyWhereStatement()));
+            return sw.ToString();
+        }
+
+        public string GetReadAllCommand()
+        {
+            var sw = new StringWriter();
+            sw.WriteLine("SELECT {0} FROM {1};",
+                string.Join(", ", GetSqlFormattedColumnNames((i) => true)),
+                GetSqlFormattedTableName());
             return sw.ToString();
         }
 
