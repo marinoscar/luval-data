@@ -20,7 +20,7 @@ namespace luval.data
             {
                 Name = GetColumnName(property),
                 IsPrimaryKey = property.GetCustomAttribute<PrimaryKeyAttribute>() != null,
-                IsIdentity = property.GetCustomAttribute<PrimaryKeyAttribute>() != null
+                IsIdentity = property.GetCustomAttribute<IdentityColumnAttribute>() != null
             };
         }
 

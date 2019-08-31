@@ -64,7 +64,11 @@ namespace luval.data
 
         private IEnumerable<string> GetUpdateValueStatement()
         {
-            return GetColumnValuePair(i => !i.Item1.IsPrimaryKey && i.Item3 != null);
+            return GetColumnValuePair(i => !i.Item1.IsPrimaryKey && i.Item3 != null).Select(i => {
+                if (i.Contains("IS NULL"))
+                    i = i.Replace("IS NULL", "= NULL");
+                return i;
+            });
         }
 
         private IEnumerable<string> GetKeyWhereStatement()
@@ -87,7 +91,7 @@ namespace luval.data
 
         private IEnumerable<string> GetSqlInserValues()
         {
-            return GetEntityValues().Where(i => !i.Item1.IsIdentity && i.Item2 != null)
+            return GetEntityValues().Where(i => !i.Item1.IsIdentity && i.Item3 != null)
                 .Select(i => i.Item2.ToSql()).ToList();
         }
 
