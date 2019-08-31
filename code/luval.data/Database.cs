@@ -363,7 +363,7 @@ namespace luval.data
             return ((T)entity);
         }
 
-        private PropertyInfo GetEntityPropertyFromFieldName(string name, Type type)
+        internal static PropertyInfo GetEntityPropertyFromFieldName(string name, Type type)
         {
             var property = type.GetProperty(name);
             if (property != null)
