@@ -23,8 +23,8 @@ namespace luval.data.tests
                 DoNotMap = "Do Not Map",
                 DoNotMap2 = "Do Not Map2"
             };
-            var provider = new SqlServerDialectProvider<Complex>(entity);
-            var statement = provider.GetReadCommand().Trim().ToLowerInvariant().Replace(" ", "");
+            var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
+            var statement = provider.GetReadCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
             var expected = string.Format("SELECT [ComplexId], [ComplexName], [ComplexValue], [ComplexUpdatedOn] FROM [ComplextTable] WHERE [ComplexId] = {0};", entity.Id)
                     .Trim().ToLowerInvariant().Replace(" ", "");
             Assert.AreEqual(expected, statement);
@@ -43,8 +43,8 @@ namespace luval.data.tests
                 DoNotMap = "Do Not Map",
                 DoNotMap2 = "Do Not Map2"
             };
-            var provider = new SqlServerDialectProvider<Complex>(entity);
-            var statement = provider.GetCreateCommand().Trim().ToLowerInvariant().Replace(" ", "");
+            var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
+            var statement = provider.GetCreateCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
             var expected = string.Format("INSERT ([ComplexName], [ComplexValue], [ComplexUpdatedOn]) INTO [ComplextTable]  VALUES({0}, {1}, {2});",
                 entity.Name.ToSql(), entity.Value.ToSql(), entity.UpdatedOn.ToSql())
                     .Trim().ToLowerInvariant().Replace(" ", "");
@@ -64,8 +64,8 @@ namespace luval.data.tests
                 DoNotMap = "Do Not Map",
                 DoNotMap2 = "Do Not Map2"
             };
-            var provider = new SqlServerDialectProvider<Complex>(entity);
-            var statement = provider.GetUpdateCommand().Trim().ToLowerInvariant().Replace(" ", "");
+            var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
+            var statement = provider.GetUpdateCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
             var expected = string.Format("UPDATE [ComplextTable] SET [ComplexName] = {0}, [ComplexValue] = {1}, [ComplexUpdatedOn] = {2} WHERE [ComplexId] = {3};",
                 entity.Name.ToSql(), entity.Value.ToSql(), entity.UpdatedOn.ToSql(), entity.Id.ToSql())
                     .Trim().ToLowerInvariant().Replace(" ", "");
@@ -85,8 +85,8 @@ namespace luval.data.tests
                 DoNotMap = "Do Not Map",
                 DoNotMap2 = "Do Not Map2"
             };
-            var provider = new SqlServerDialectProvider<Complex>(entity);
-            var statement = provider.GetDeleteCommand().Trim().ToLowerInvariant().Replace(" ", "");
+            var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
+            var statement = provider.GetDeleteCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
             var expected = string.Format("DELETE FROM [ComplextTable] WHERE [ComplexId] = {3};",
                 entity.Name.ToSql(), entity.Value.ToSql(), entity.UpdatedOn.ToSql(), entity.Id.ToSql())
                     .Trim().ToLowerInvariant().Replace(" ", "");
@@ -103,8 +103,8 @@ namespace luval.data.tests
                 StrKey = Guid.NewGuid().ToString(),
                 Data = Guid.NewGuid().ToString()
             };
-            var provider = new SqlServerDialectProvider<MultipleKeys>(entity);
-            var statement = provider.GetDeleteCommand().Trim().ToLowerInvariant().Replace(" ", "");
+            var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
+            var statement = provider.GetDeleteCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
             var expected = string.Format("DELETE FROM [MultipleKeys] WHERE [IntKey] = {0} AND [StrKey] = {1};",
                 entity.IntKey.ToSql(), entity.StrKey.ToSql())
                     .Trim().ToLowerInvariant().Replace(" ", "");
@@ -121,8 +121,8 @@ namespace luval.data.tests
                 StrKey = null,
                 Data = Guid.NewGuid().ToString()
             };
-            var provider = new SqlServerDialectProvider<MultipleKeys>(entity);
-            var statement = provider.GetDeleteCommand().Trim().ToLowerInvariant().Replace(" ", "");
+            var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
+            var statement = provider.GetDeleteCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
             var expected = string.Format("DELETE FROM [MultipleKeys] WHERE [IntKey] IS NULL AND [StrKey] IS NULL;")
                     .Trim().ToLowerInvariant().Replace(" ", "");
             Assert.AreEqual(expected, statement);
@@ -138,8 +138,8 @@ namespace luval.data.tests
                 StrKey = null,
                 Data = null
             };
-            var provider = new SqlServerDialectProvider<MultipleKeys>(entity);
-            var statement = provider.GetUpdateCommand().Trim().ToLowerInvariant().Replace(" ", "");
+            var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
+            var statement = provider.GetUpdateCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
             var expected = string.Format("UPDATE [MultipleKeys] SET [Data] = NULL WHERE [IntKey] = {0} AND [StrKey] IS NULL;",
                 entity.IntKey.ToSql(), entity.StrKey.ToSql())
                     .Trim().ToLowerInvariant().Replace(" ", "");
@@ -156,8 +156,8 @@ namespace luval.data.tests
                 Data = null,
                 DoNotMap = "Testing"
             };
-            var provider = new SqlServerDialectProvider<MultipleKeys>(entity);
-            var statement = provider.GetUpdateCommand().Trim().ToLowerInvariant().Replace(" ", "");
+            var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
+            var statement = provider.GetUpdateCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
             var expected = string.Format("UPDATE [MultipleKeys] SET [Data] = NULL WHERE [IntKey] = {0} AND [StrKey] IS NULL;",
                 entity.IntKey.ToSql(), entity.StrKey.ToSql())
                     .Trim().ToLowerInvariant().Replace(" ", "");
@@ -174,8 +174,8 @@ namespace luval.data.tests
                 Data = null,
                 DoNotMap = "Testing"
             };
-            var provider = new SqlServerDialectProvider<MultipleKeys>(entity);
-            var statement = provider.GetReadCommand().Trim().ToLowerInvariant().Replace(" ", "");
+            var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
+            var statement = provider.GetReadCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
             var expected = string.Format("SELECT [IntKey], [StrKey], [Data] FROM  [MultipleKeys] WHERE [IntKey] = {0} AND [StrKey] IS NULL;",
                 entity.IntKey.ToSql())
                     .Trim().ToLowerInvariant().Replace(" ", "");
@@ -192,7 +192,7 @@ namespace luval.data.tests
                 Data = null,
                 DoNotMap = "Testing"
             };
-            var provider = new SqlServerDialectProvider<MultipleKeys>(entity);
+            var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
             var statement = provider.GetReadAllCommand().Trim().ToLowerInvariant().Replace(" ", "");
             var expected = string.Format("SELECT [IntKey], [StrKey], [Data] FROM [MultipleKeys];",
                 entity.IntKey.ToSql())
@@ -210,8 +210,8 @@ namespace luval.data.tests
                 Data = "DATA",
                 DoNotMap = "Testing"
             };
-            var provider = new SqlServerDialectProvider<MultipleKeys>(entity);
-            var statement = provider.GetCreateCommand().Trim().ToLowerInvariant().Replace(" ", "");
+            var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
+            var statement = provider.GetCreateCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
             var expected = string.Format("INSERT ([IntKey], [StrKey], [Data]) INTO [MultipleKeys] VALUES ({0},{1},{2});",
                 entity.IntKey.ToSql(), entity.StrKey.ToSql(), entity.Data.ToSql())
                     .Trim().ToLowerInvariant().Replace(" ", "");

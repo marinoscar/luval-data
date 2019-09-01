@@ -1,41 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
 namespace luval.data
 {
-    public class EntityAdapter<T>
+    public class EntityAdapter
     {
-        public EntityAdapter(Database database, ISqlDialectProvider<T> dialectProvider)
+        public EntityAdapter(Database database, ISqlDialectProvider dialectProvider)
         {
-            Entity = dialectProvider.Entity;
             Database = database;
             DialectProvider = dialectProvider;
         }
 
-        public ISqlDialectProvider<T> DialectProvider { get; private set; }
+        public ISqlDialectProvider DialectProvider { get; private set; }
         public Database Database { get; private set; }
-        public T Entity { get; private set; }
 
-        public int Insert()
+        public int Insert(IDataRecord record)
         {
-            return Database.ExecuteNonQuery(DialectProvider.GetCreateCommand());
+            return Database.ExecuteNonQuery(DialectProvider.GetCreateCommand(record));
         }
 
-        public int Update()
+        public int Update(IDataRecord record)
         {
-            return Database.ExecuteNonQuery(DialectProvider.GetUpdateCommand());
+            return Database.ExecuteNonQuery(DialectProvider.GetUpdateCommand(record));
         }
 
-        public int Delete()
+        public int Delete(IDataRecord record)
         {
-            return Database.ExecuteNonQuery(DialectProvider.GetDeleteCommand());
+            return Database.ExecuteNonQuery(DialectProvider.GetDeleteCommand(record));
         }
 
-        public T Read()
+        public T Read<T>(IDataRecord record)
         {
-            return Database.ExecuteToEntityList<T>(DialectProvider.GetReadCommand()).SingleOrDefault();
+            return Database.ExecuteToEntityList<T>(DialectProvider.GetReadCommand(record)).SingleOrDefault();
         }
 
 

@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Reflection;
 
 namespace luval.data
 {
@@ -27,6 +28,11 @@ namespace luval.data
             {
                 _record[dataRecord.GetName(i)] = dataRecord.GetValue(i);
             }
+        }
+
+        public DictionaryDataRecord(object entity):this(FromEntityToDictionary(entity))
+        {
+
         }
 
         public object this[int i] => GetValue(i);
@@ -145,6 +151,24 @@ namespace luval.data
         public bool IsDBNull(int i)
         {
             return GetValue(i).IsNullOrDbNull();
+        }
+
+        public static IDataRecord FromEntity(object o)
+        {
+            return new DictionaryDataRecord(FromEntityToDictionary(o));
+        }
+
+        private static Dictionary<string, object> FromEntityToDictionary(object o)
+        {
+            var record = new Dictionary<string, object>();
+            foreach (var property in o.GetType().GetProperties())
+            {
+                if (property.GetCustomAttribute<NotMappedAttribute>() != null) continue;
+                var colAtt = property.GetCustomAttribute<ColumnNameAttribute>();
+                var name = colAtt != null ? colAtt.Name : property.Name;
+                record[name] = property.GetValue(o, null);
+            }
+            return record;
         }
     }
 }

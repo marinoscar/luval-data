@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,57 +9,49 @@ using System.Text;
 
 namespace luval.data
 {
-    public class SqlServerDialectProvider<T> : ISqlDialectProvider<T>
+    public class SqlServerDialectProvider : ISqlDialectProvider
     {
-
-        public SqlServerDialectProvider(T entity): this(entity, SqlTableSchema.Load(entity.GetType()))
-        {
-
-        }
-
-        public SqlServerDialectProvider(T entity, SqlTableSchema schema)
+        public SqlServerDialectProvider(SqlTableSchema schema)
         {
             Schema = schema;
-            Entity = entity;
         }
 
         public SqlTableSchema Schema { get; private set; }
-        public T Entity { get; private set; }
 
-        public string GetCreateCommand()
+        public string GetCreateCommand(IDataRecord record)
         {
             var sw = new StringWriter();
             sw.WriteLine("INSERT ({0}) INTO {1} VALUES ({2});",
                 string.Join(", ", GetSqlFormattedColumnNames((i) => !i.IsIdentity)),
                 GetSqlFormattedTableName(),
-                string.Join(", ", GetSqlInserValues()));
+                string.Join(", ", GetSqlInserValues(record)));
             return sw.ToString();
         }
 
-        public string GetDeleteCommand()
+        public string GetDeleteCommand(IDataRecord record)
         {
             var sw = new StringWriter();
             sw.WriteLine("DELETE FROM {0} WHERE {1};", GetSqlFormattedTableName(),
-                string.Join(" AND ", GetKeyWhereStatement()));
+                string.Join(" AND ", GetKeyWhereStatement(record)));
             return sw.ToString();
         }
 
-        public string GetUpdateCommand()
+        public string GetUpdateCommand(IDataRecord record)
         {
             var sw = new StringWriter();
             sw.WriteLine("UPDATE {0} SET {1} WHERE {2};", GetSqlFormattedTableName(),
-                string.Join(", ", GetUpdateValueStatement()),
-                string.Join(" AND ", GetKeyWhereStatement()));
+                string.Join(", ", GetUpdateValueStatement(record)),
+                string.Join(" AND ", GetKeyWhereStatement(record)));
             return sw.ToString();
         }
 
-        public string GetReadCommand()
+        public string GetReadCommand(IDataRecord record)
         {
             var sw = new StringWriter();
             sw.WriteLine("SELECT {0} FROM {1} WHERE {2};",
                 string.Join(", ", GetSqlFormattedColumnNames((i) => true)),
                 GetSqlFormattedTableName(),
-                string.Join(" AND ", GetKeyWhereStatement()));
+                string.Join(" AND ", GetKeyWhereStatement(record)));
             return sw.ToString();
         }
 
@@ -71,50 +64,43 @@ namespace luval.data
             return sw.ToString();
         }
 
-        private IEnumerable<string> GetUpdateValueStatement()
+        private IEnumerable<string> GetUpdateValueStatement(IDataRecord record)
         {
-            return GetColumnValuePair(i => !i.Item1.IsPrimaryKey && i.Item3 != null).Select(i => {
+            return GetColumnValuePair(record, i => !i.IsPrimaryKey).Select(i => {
                 if (i.Contains("IS NULL"))
                     i = i.Replace("IS NULL", "= NULL");
                 return i;
             });
         }
 
-        private IEnumerable<string> GetKeyWhereStatement()
+        private IEnumerable<string> GetKeyWhereStatement(IDataRecord record)
         {
             if (!Schema.Columns.Any(i => i.IsPrimaryKey))
                 throw new InvalidDataException("At least one primary key column is required");
-            return GetColumnValuePair(i => i.Item1.IsPrimaryKey && i.Item3 != null);
+            return GetColumnValuePair(record, i => i.IsPrimaryKey);
         }
 
-        private IEnumerable<string> GetColumnValuePair(Func<Tuple<SqlColumnSchema, object, PropertyInfo>, bool> predicate)
+        private IEnumerable<string> GetColumnValuePair(IDataRecord record, Func<SqlColumnSchema, bool> predicate)
         {
-            return GetEntityValues().Where(predicate)
+            return Schema.Columns.Where(predicate)
                 .Select(i =>
                 {
-                    var res = string.Format("{0} = {1}", GetSqlFormattedColumnName(i.Item1), i.Item2.ToSql());
-                    if (i.Item2.IsNullOrDbNull()) res = string.Format("{0} IS NULL", GetSqlFormattedColumnName(i.Item1));
+                    var val = record[i.Name];
+                    var res = string.Format("{0} = {1}", GetSqlFormattedColumnName(i), val.ToSql());
+                    if (val.IsNullOrDbNull()) res = string.Format("{0} IS NULL", GetSqlFormattedColumnName(i));
                     return res;
                 }).ToList();
         }
 
-        private IEnumerable<string> GetSqlInserValues()
+        private IEnumerable<string> GetSqlInserValues(IDataRecord record)
         {
-            return GetEntityValues().Where(i => !i.Item1.IsIdentity && i.Item3 != null)
-                .Select(i => i.Item2.ToSql()).ToList();
+            return GetEntityValues(record, i => !i.IsIdentity).Select(i => i.ToSql());
         }
 
-        private IEnumerable<Tuple<SqlColumnSchema, object, PropertyInfo>> GetEntityValues()
+        private IEnumerable<object> GetEntityValues(IDataRecord record, Func<SqlColumnSchema, bool> predicate)
         {
-            var res = new List<Tuple<SqlColumnSchema, object, PropertyInfo>>();
-            foreach (var col in Schema.Columns)
-            {
-                var obj = default(object);
-                var prop = Database.GetEntityPropertyFromFieldName(col.Name, Entity.GetType());
-                if (prop != null)
-                    obj = prop.GetValue(Entity);
-                res.Add(new Tuple<SqlColumnSchema, object, PropertyInfo>(col, obj, prop));
-            }
+            var res = new List<object>();
+            Schema.Columns.Where(predicate).ToList().ForEach(i => res.Add(record[i.Name]));
             return res;
         }
 
