@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace luval.data
+namespace Luval.Data
 {
     public class SqlFormatter : IFormatProvider, ICustomFormatter
     {

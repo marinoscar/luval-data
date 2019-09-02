@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace luval.data.tests.Mocks.Data
+namespace Luval.Data.tests.Mocks.Data
 {
     public class MTransaction : IDbTransaction
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace luval.data
+namespace Luval.Data
 {
     /// <summary>
     /// Specifies the name of a column for an entity

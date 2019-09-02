@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Reflection;
 
-namespace luval.data
+namespace Luval.Data
 {
     public class DictionaryDataRecord : IDataRecord
     {

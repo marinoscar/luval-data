@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace luval.data
+namespace Luval.Data
 {
     /// <summary>
     /// Provides an abstraction to the operations in a relational Sql Server database extending the implementation of the 

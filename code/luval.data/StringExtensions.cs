@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace luval.data
+namespace Luval.Data
 {
     public static class StringExtensions
     {

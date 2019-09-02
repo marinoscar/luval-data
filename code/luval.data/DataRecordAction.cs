@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace luval.data
+namespace Luval.Data
 {
     public class DataRecordAction
     {

@@ -1,4 +1,4 @@
-﻿using luval.data.tests.Mocks.Entities;
+﻿using Luval.Data.tests.Mocks.Entities;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace luval.data.tests
+namespace Luval.Data.tests
 {
     [TestFixture]
     public class When_Sql_Script_Is_Created_Using_Dialect_Provider

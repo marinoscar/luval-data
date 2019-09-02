@@ -1,12 +1,12 @@
-﻿using luval.data.tests.Mocks.Data;
-using luval.data.tests.Mocks.Entities;
+﻿using Luval.Data.tests.Mocks.Data;
+using Luval.Data.tests.Mocks.Entities;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace luval.data.tests
+namespace Luval.Data.tests
 {
     [TestFixture]
     public class When_Entities_Are_Being_Map

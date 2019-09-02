@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace luval.data.tests.Mocks.Entities
+namespace Luval.Data.tests.Mocks.Entities
 {
     public class MultipleKeys
     {

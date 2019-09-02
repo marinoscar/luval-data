@@ -1,5 +1,5 @@
-﻿using luval.data.tests.Mocks.Data;
-using luval.data.tests.Mocks.Entities;
+﻿using Luval.Data.tests.Mocks.Data;
+using Luval.Data.tests.Mocks.Entities;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace luval.data.tests
+namespace Luval.Data.tests
 {
     [TestFixture]
     public class When_SqlTableSchema_Is_Loaded

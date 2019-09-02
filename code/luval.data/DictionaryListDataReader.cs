@@ -6,7 +6,7 @@ using System.Text;
 using System.Reflection;
 using System.Linq;
 
-namespace luval.data
+namespace Luval.Data
 {
     public class ListDataReader : IDataReader
     {

@@ -6,7 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 
-namespace luval.data.tests.Mocks.Data
+namespace Luval.Data.tests.Mocks.Data
 {
     public class MDataReader : IDataReader
     {

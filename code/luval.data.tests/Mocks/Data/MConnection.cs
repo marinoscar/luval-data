@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.Common;
 using System.Text;
 
-namespace luval.data.tests.Mocks.Data
+namespace Luval.Data.tests.Mocks.Data
 {
     public class MConnection : IDbConnection
     {

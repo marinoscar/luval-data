@@ -11,6 +11,7 @@
     <RepositoryType>luval-data</RepositoryType>
     <PackageReleaseNotes>Initial relase</PackageReleaseNotes>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
+    <RootNamespace>Luval.Data</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

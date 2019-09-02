@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace luval.data
+namespace Luval.Data
 {
     /// <summary>
     /// Provides an abstraction for the schema of a sql column

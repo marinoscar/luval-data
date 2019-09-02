@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace luval.data
+namespace Luval.Data
 {
     public interface ISqlDialectProvider
     {
