@@ -358,9 +358,34 @@ namespace Luval.Data
             {
                 var p = GetEntityPropertyFromFieldName(record.GetName(i), type);
                 if (p == null) continue;
-                p.SetValue(entity, Convert.ChangeType(record.GetValue(i), p.PropertyType));
+                object val = record.GetValue(i);
+                if (record.IsDBNull(i)) val = GetDefaultValue(p.PropertyType);
+                var typeToConvert = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
+                p.SetValue(entity, TryChangeType(val, typeToConvert));
             }
             return ((T)entity);
+        }
+
+        private object TryChangeType(object val, Type type)
+        {
+            try
+            {
+                val = Convert.ChangeType(val, type);
+            }
+            catch(InvalidCastException inv)
+            {
+                if (val != null && (typeof(Guid) == val.GetType()))
+                    val = ((Guid)val).ToString();
+            }
+            catch(Exception ex)
+            {
+            }
+            return val;
+        }
+
+        private object GetDefaultValue(Type type)
+        {
+            return Activator.CreateInstance(type);
         }
 
         internal static PropertyInfo GetEntityPropertyFromFieldName(string name, Type type)
