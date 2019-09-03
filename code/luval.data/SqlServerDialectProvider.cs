@@ -21,7 +21,7 @@ namespace Luval.Data
         public string GetCreateCommand(IDataRecord record)
         {
             var sw = new StringWriter();
-            sw.WriteLine("INSERT ({0}) INTO {1} VALUES ({2});",
+            sw.WriteLine("INSERT INTO {1} ({0}) VALUES ({2});",
                 string.Join(", ", GetSqlFormattedColumnNames((i) => !i.IsIdentity)),
                 GetSqlFormattedTableName(),
                 string.Join(", ", GetSqlInserValues(record)));

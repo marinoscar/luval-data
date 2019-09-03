@@ -45,7 +45,7 @@ namespace Luval.Data.tests
             };
             var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
             var statement = provider.GetCreateCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
-            var expected = string.Format("INSERT ([ComplexName], [ComplexValue], [ComplexUpdatedOn]) INTO [ComplextTable]  VALUES({0}, {1}, {2});",
+            var expected = string.Format("INSERT INTO [ComplextTable] ([ComplexName], [ComplexValue], [ComplexUpdatedOn]) VALUES({0}, {1}, {2});",
                 entity.Name.ToSql(), entity.Value.ToSql(), entity.UpdatedOn.ToSql())
                     .Trim().ToLowerInvariant().Replace(" ", "");
             Assert.AreEqual(expected, statement);
@@ -212,7 +212,7 @@ namespace Luval.Data.tests
             };
             var provider = new SqlServerDialectProvider(SqlTableSchema.Load(entity.GetType()));
             var statement = provider.GetCreateCommand(DictionaryDataRecord.FromEntity(entity)).Trim().ToLowerInvariant().Replace(" ", "");
-            var expected = string.Format("INSERT ([IntKey], [StrKey], [Data]) INTO [MultipleKeys] VALUES ({0},{1},{2});",
+            var expected = string.Format("INSERT INTO [MultipleKeys] ([IntKey], [StrKey], [Data]) VALUES ({0},{1},{2});",
                 entity.IntKey.ToSql(), entity.StrKey.ToSql(), entity.Data.ToSql())
                     .Trim().ToLowerInvariant().Replace(" ", "");
             Assert.AreEqual(expected, statement);
