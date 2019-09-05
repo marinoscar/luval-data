@@ -18,24 +18,50 @@ namespace Luval.Data
         public ISqlDialectProvider DialectProvider { get; private set; }
         public Database Database { get; private set; }
 
+        private int DoAction(IDataRecord record, Func<IDataRecord, string> action)
+        {
+            return Database.ExecuteNonQuery(action(record));
+        }
+
+        public int Insert(object entity)
+        {
+            return Insert(DictionaryDataRecord.FromEntity(entity));
+        }
+
         public int Insert(IDataRecord record)
         {
-            return Database.ExecuteNonQuery(DialectProvider.GetCreateCommand(record));
+            return DoAction(record, DialectProvider.GetCreateCommand);
         }
+
+        public int Update(object entity)
+        {
+            return Update(DictionaryDataRecord.FromEntity(entity));
+        }
+
 
         public int Update(IDataRecord record)
         {
-            return Database.ExecuteNonQuery(DialectProvider.GetUpdateCommand(record));
+            return DoAction(record, DialectProvider.GetUpdateCommand);
         }
 
         public int Delete(IDataRecord record)
         {
-            return Database.ExecuteNonQuery(DialectProvider.GetDeleteCommand(record));
+            return DoAction(record, DialectProvider.GetDeleteCommand);
+        }
+
+        public int Delete(object entity)
+        {
+            return Delete(DictionaryDataRecord.FromEntity(entity));
         }
 
         public T Read<T>(IDataRecord record)
         {
             return Database.ExecuteToEntityList<T>(DialectProvider.GetReadCommand(record)).SingleOrDefault();
+        }
+
+        public T Read<T>(object entity)
+        {
+            return Read<T>(DictionaryDataRecord.FromEntity(entity));
         }
 
         public int ExecuteInTransaction(IEnumerable<DataRecordAction> records)
