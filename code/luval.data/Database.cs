@@ -385,7 +385,11 @@ namespace Luval.Data
 
         private object GetDefaultValue(Type type)
         {
-            return Activator.CreateInstance(type);
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
         }
 
         internal static PropertyInfo GetEntityPropertyFromFieldName(string name, Type type)
