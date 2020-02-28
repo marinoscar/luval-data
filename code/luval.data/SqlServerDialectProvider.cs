@@ -66,7 +66,7 @@ namespace Luval.Data
 
         private IEnumerable<string> GetUpdateValueStatement(IDataRecord record)
         {
-            return GetColumnValuePair(record, i => !i.IsPrimaryKey).Select(i => {
+            return GetColumnValuePair(record, i => !i.IsPrimaryKey && !i.IsIdentity).Select(i => {
                 if (i.Contains("IS NULL"))
                     i = i.Replace("IS NULL", "= NULL");
                 return i;
