@@ -9,31 +9,13 @@ namespace Luval.Data.Sql
 {
     public class DbEntityCollection<TEntity, TKey> : EntityCollection<TEntity, TKey>
     {
+        private IQuery<TEntity, TKey> _query;
         public DbEntityCollection(Database database, IDbDialectProvider sqlDialectProvider)
         {
-            DbQuery = new DbQuery<TEntity, TKey>(database, sqlDialectProvider);
+            _query = new DbQuery<TEntity, TKey>(database, sqlDialectProvider);
         }
 
-        protected DbQuery<TEntity, TKey> DbQuery { get; private set; }
+        public override IQuery<TEntity, TKey> Query { get { return _query; } }
 
-        public override TEntity Get(TKey key, EntityLoadMode mode)
-        {
-            return DbQuery.Get(key, mode);
-        }
-
-        public override IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> whereExpression)
-        {
-            return DbQuery.Get(whereExpression);
-        }
-
-        public override IEnumerable<TEntity> Get(IQueryCommand queryCommand)
-        {
-            return DbQuery.Get(queryCommand);
-        }
-
-        public override IEnumerable<IDictionary<string, object>> GetRaw(IQueryCommand queryCommand)
-        {
-            return DbQuery.GetRaw(queryCommand);
-        }
     }
 }

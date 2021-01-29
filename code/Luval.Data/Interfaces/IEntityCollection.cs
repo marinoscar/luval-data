@@ -4,13 +4,14 @@ using System.Text;
 
 namespace Luval.Data.Interfaces
 {
-    public interface IEntityCollection<TEntity, TKey> : ICollection<TEntity>, IQuery<TEntity, TKey>
+    public interface IEntityCollection<TEntity, TKey> : ICollection<TEntity>
     {
         void Update(TEntity item);
         IEnumerable<TEntity> GetAdded();
         IEnumerable<TEntity> GetModified();
         IEnumerable<TEntity> GetRemoved();
         IEntityCollection ToEntityCollection();
+        IQuery<TEntity, TKey> Query { get; }
 
     }
 

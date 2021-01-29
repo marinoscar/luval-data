@@ -8,12 +8,13 @@ using System.Text;
 
 namespace Luval.Data
 {
-    public abstract class EntityCollection<TEntity, TKey> : EntityQuery<TEntity, TKey>, IEntityCollection<TEntity, TKey>
+    public abstract class EntityCollection<TEntity, TKey> : IEntityCollection<TEntity, TKey>
     {
         private readonly List<EntityItem> _internal = new List<EntityItem>();
         
         private class EntityItem { public TEntity Entity { get; set; } public EntityState State { get; set; } }
 
+        public abstract IQuery<TEntity, TKey> Query { get; }
         public int Count { get { return _internal.Count; } }
 
         public bool IsReadOnly => false;
