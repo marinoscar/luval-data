@@ -18,10 +18,16 @@ namespace Luval.Data
         public abstract TEntity Get(TKey key, EntityLoadMode mode);
 
         public abstract IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> whereExpression);
+        public abstract IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> whereExpression, int take);
 
         public Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> whereExpression, CancellationToken cancellationToken)
         {
             return Task.Run(() => { return Get(whereExpression); }, cancellationToken);
+        }
+
+        public Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> whereExpression, int take, CancellationToken cancellationToken)
+        {
+            return Task.Run(() => { return Get(whereExpression, take); }, cancellationToken);
         }
 
         public Task<TEntity> GetAsync(TKey key, CancellationToken cancellationToken)

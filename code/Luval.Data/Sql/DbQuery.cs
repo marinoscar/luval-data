@@ -33,11 +33,7 @@ namespace Luval.Data.Sql
 
         public override IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> whereExpression)
         {
-            var columns = string.Join(",", Schema.Columns.Select(i => string.Format("[{0}]", i.ColumnName)));
-            var expressionProvider = new SqlExpressionProvider<TEntity>();
-            var whereStatement = expressionProvider.ResolveWhere<TEntity>(whereExpression);
-            var sql = string.Format("SELECT {0} FROM {1} WHERE {2}", columns, Schema.TableName.GetFullTableName(), whereStatement);
-            return Database.ExecuteToEntityList<TEntity>(sql);
+            return Get(whereExpression, 0);
         }
 
         public override TEntity Get(TKey key, EntityLoadMode mode)
@@ -56,6 +52,18 @@ namespace Luval.Data.Sql
                 prop.SetValue(entity, propertyValue);
             }
             return entity;
+        }
+
+        public override IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> whereExpression, int take)
+        {
+            var takeExpression = "";
+            if (take > 0)
+                takeExpression = string.Format("TOP({0})", take);
+            var columns = string.Join(",", Schema.Columns.Select(i => string.Format("[{0}]", i.ColumnName)));
+            var expressionProvider = new SqlExpressionProvider<TEntity>();
+            var whereStatement = expressionProvider.ResolveWhere<TEntity>(whereExpression);
+            var sql = string.Format("SELECT {0} {1} FROM {2} WHERE {3}", takeExpression, columns, Schema.TableName.GetFullTableName(), whereStatement);
+            return Database.ExecuteToEntityList<TEntity>(sql);
         }
 
         public override IEnumerable<TEntity> Get(IQueryCommand queryCommand)
