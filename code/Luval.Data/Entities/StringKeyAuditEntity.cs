@@ -9,6 +9,8 @@ namespace Luval.Data.Entities
         public StringKeyAuditEntity() : base()
         {
             Id = Guid.NewGuid().ToString();
+            UtcCreatedOn = DateTime.UtcNow;
+            UtcUpdatedOn = UtcCreatedOn;
         }
     }
 }
