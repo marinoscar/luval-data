@@ -21,10 +21,9 @@ namespace Luval.Data.Sql
         protected IDbDialectProvider SqlDialectProvider { get; private set; }
         protected Database Database { get; private set; }
 
-        public override int SaveChanges()
+        internal IEnumerable<string> GetCommands()
         {
             var commands = new List<string>();
-
             foreach (var item in Entities.GetAdded())
                 commands.Add(SqlDialectProvider.GetCreateCommand(EntityMapper.ToDataRecord(item), true));
 
@@ -34,8 +33,13 @@ namespace Luval.Data.Sql
             foreach (var item in Entities.GetRemoved())
                 commands.Add(SqlDialectProvider.GetDeleteCommand(EntityMapper.ToDataRecord(item)));
 
+            return commands;
+        }
+
+        public override int SaveChanges()
+        {
             Entities.Clear();
-            return Database.ExecuteNonQuery(string.Join(Environment.NewLine, commands));
+            return Database.ExecuteNonQuery(string.Join(Environment.NewLine, GetCommands()));
         }
     }
 }
