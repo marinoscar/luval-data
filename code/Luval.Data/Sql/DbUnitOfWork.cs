@@ -38,8 +38,9 @@ namespace Luval.Data.Sql
 
         public override int SaveChanges()
         {
+            var commands = GetCommands();
             Entities.Clear();
-            return Database.ExecuteNonQuery(string.Join(Environment.NewLine, GetCommands()));
+            return Database.ExecuteNonQuery(string.Join(Environment.NewLine, commands));
         }
     }
 }
