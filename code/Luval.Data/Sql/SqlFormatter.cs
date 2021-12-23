@@ -38,9 +38,19 @@ namespace Luval.Data.Sql
                 return "NULL";
             }
 
-            if (o is DateTime)
+            if (o is DateTime || o is DateTime?)
             {
                 return prefix + string.Format("'{0:yyyy-MM-dd HH:mm:ss.fff}'", o);
+            }
+
+            if (o is DateTimeOffset)
+            {
+                return prefix + string.Format("'{0:yyyy-MM-dd HH:mm:ss.fff}'", ((DateTimeOffset)o).UtcDateTime);
+            }
+
+            if (o is DateTimeOffset?)
+            {
+                return prefix + string.Format("'{0:yyyy-MM-dd HH:mm:ss.fff}'", ((DateTimeOffset?)o).Value.UtcDateTime);
             }
 
             if (o is Enum)
