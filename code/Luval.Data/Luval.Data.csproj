@@ -10,10 +10,10 @@
     <PackageProjectUrl>https://github.com/marinoscar/luval-data</PackageProjectUrl>
     <PackageIcon>LV-Luval-Logo-200x200.png</PackageIcon>
     <RepositoryUrl>https://github.com/marinoscar/luval-data</RepositoryUrl>
-    <Version>1.1.5</Version>
+    <Version>1.1.6</Version>
     <PackageReleaseNotes>Minor improvements to the cor</PackageReleaseNotes>
-    <AssemblyVersion>1.1.5.21357</AssemblyVersion>
-    <FileVersion>1.1.5.21357</FileVersion>
+    <AssemblyVersion>1.1.6.21358</AssemblyVersion>
+    <FileVersion>1.1.6.21358</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
