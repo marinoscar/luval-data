@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Luval.Data.Interfaces
 {
+    /// <summary>
+    /// Identifies a <see cref="IAuditableEntity{TKey}"/> with a <see cref="string"/> type for the Id property
+    /// </summary>
     public interface IStringKeyAuditEntity : IAuditableEntity<string>
     {
 

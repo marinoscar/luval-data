@@ -9,6 +9,11 @@ namespace Luval.Data.Interfaces
     /// </summary>
     public interface IQueryCommand
     {
+        /// <summary>
+        /// Gets the command to executre
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> with the expected command</typeparam>
+        /// <returns></returns>
         T Get<T>();
     }
 }
