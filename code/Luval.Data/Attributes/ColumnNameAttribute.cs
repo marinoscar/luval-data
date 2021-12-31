@@ -10,6 +10,10 @@ namespace Luval.Data.Attributes
     [AttributeUsage(AttributeTargets.Property)]
     public class ColumnNameAttribute : NameBaseAttribute
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="ColumnNameAttribute"/>
+        /// </summary>
+        /// <param name="name"></param>
         public ColumnNameAttribute(string name):base(name)
         {
         }

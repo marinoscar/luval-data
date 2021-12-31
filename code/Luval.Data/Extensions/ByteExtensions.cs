@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Luval.Data.Extensions
 {
+    /// <summary>
+    /// Provides extensions to the <see cref="Byte"/> class
+    /// </summary>
     public static class ByteExtensions
     {
         static ByteExtensions()

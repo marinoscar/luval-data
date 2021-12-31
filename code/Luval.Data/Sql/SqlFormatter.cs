@@ -78,19 +78,19 @@ namespace Luval.Data.Sql
                 s = s.Replace("'", "''");
                 if (format == "startsWith")
                 {
-                    s = s.EscapeMagicSqlLikeChars();
+                    s = s.EscapeSqlLikeChars();
                     return "LIKE '{0}%'".Fi(s);
                 }
 
                 if (format == "endsWith")
                 {
-                    s = s.EscapeMagicSqlLikeChars();
+                    s = s.EscapeSqlLikeChars();
                     return "LIKE '%{0}'".Fi(s);
                 }
 
                 if (format == "contains")
                 {
-                    s = s.EscapeMagicSqlLikeChars();
+                    s = s.EscapeSqlLikeChars();
                     return "LIKE '%{0}%'".Fi(s);
                 }
 

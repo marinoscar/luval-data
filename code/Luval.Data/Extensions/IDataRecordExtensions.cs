@@ -5,8 +5,16 @@ using System.Text;
 
 namespace Luval.Data.Extensions
 {
+    /// <summary>
+    /// Provides extensions to the <see cref="IDataRecord"/> interface
+    /// </summary>
     public static class IDataRecordExtensions
     {
+        /// <summary>
+        /// Creates a <see cref="IDictionary{TKey, TValue}"/> from a <see cref="IDataRecord"/> implementation
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
         public static IDictionary<string, object> ToDictionary(this IDataRecord record)
         {
             var dic = new Dictionary<string, object>();

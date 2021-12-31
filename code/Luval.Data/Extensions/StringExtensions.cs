@@ -9,49 +9,62 @@ using System.Text.RegularExpressions;
 
 namespace Luval.Data.Extensions
 {
+    /// <summary>
+    /// Provide extension methods for the <see cref="string"/> data type
+    /// </summary>
     public static class StringExtensions
     {
-        public static readonly Char[] MagicRegexChars = new[] { '^', '$', '.', '(', ')', '{', '\\', '[', '?', '+', '*', '|' };
-        public static readonly Char[] MagicSqlLikeChars = new[] { '%', '_', '[', ']' };
-        public static readonly Char[] AngleBrackets = new[] { '<', '>' };
-        public static readonly Regex EmailPattern = new Regex(@"^[\w._%+-]+@[\w.-]+\.[A-Za-z]{2,4}$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        public static readonly Char[] SqlLikeChars = new[] { '%', '_', '[', ']' };
 
         /// <summary>
-        /// Formats a string and arguments using the <see cref="CultureInfo.InvariantCulture">invariant culture</see>.
+        /// Provides a <seealso cref="CultureInfo.InvariantCulture"/> formatted <see cref="string"/> value
         /// </summary>
-        /// <remarks>
-        /// <para>This should <b>not</b> be used for any strings that are displayed to the user. It is meant for log
-        /// messages, exception messages, and other types of information that do not make it into the UI, or wouldn't
-        /// make sense to users anyway ;).</para>
-        /// </remarks>
+        /// <param name="format">A <see cref="string"/> with the format</param>
+        /// <param name="args">Arguments to use</param>
+        /// <returns>Formatted string</returns>
         public static string FormatInvariant(this string format, params object[] args)
         {
             return 0 == args.Length ? format : string.Format(CultureInfo.InvariantCulture, format, args);
         }
 
+        /// <summary>
+        /// Formats a string to be used as part of a SQL statement with a <see cref="SqlFormatter"/> implementation
+        /// </summary>
+        /// <param name="format">A <see cref="string"/> with the format</param>
+        /// <param name="args">Arguments to use</param>
+        /// <returns>Sql formatted string</returns>
         public static string FormatSql(this string format, params object[] args)
         {
             return string.Format(SqlFormatter.Instance, format, args);
         }
+
         /// <summary>
         /// Alias for <see cref="FormatInvariant" />.
         /// </summary>
+        /// <param name="format">A <see cref="string"/> with the format</param>
+        /// <param name="args">Arguments to use</param>
+        /// <returns>Formatted string</returns>
         public static string Fi(this string format, params object[] args)
         {
             return FormatInvariant(format, args);
         }
 
-        public static string EscapeMagicSqlLikeChars(this string s)
+        /// <summary>
+        /// Verifies the proper implementation of sql like characters
+        /// </summary>
+        /// <param name="s">input string to use</param>
+        /// <returns>A escaped sql string</returns>
+        public static string EscapeSqlLikeChars(this string s)
         {
             // make the common case fast
-            if (-1 == s.LastIndexOfAny(MagicSqlLikeChars))
+            if (-1 == s.LastIndexOfAny(SqlLikeChars))
             {
                 return s;
             }
 
-            for (var i = 0; i < MagicSqlLikeChars.Length; i++)
+            for (var i = 0; i < SqlLikeChars.Length; i++)
             {
-                var c = MagicSqlLikeChars[i];
+                var c = SqlLikeChars[i];
                 if (s.LastIndexOf(c) != -1)
                 {
                     s = s.Replace(c.ToString(), "[" + c + "]");

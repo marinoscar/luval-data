@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Luval.Data.Extensions
 {
+    /// <summary>
+    /// Provides extension methods for base <see cref="object"/> operations
+    /// </summary>
     public static class ObjectExtensions
     {
         /// <summary>
@@ -39,6 +42,11 @@ namespace Luval.Data.Extensions
             return IsPrimitiveType(o.GetType());
         }
 
+        /// <summary>
+        /// Identifies if a <see cref="Type"/> is of primitive type
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to evaluate</param>
+        /// <returns>A <see cref="bool"/> with the result</returns>
         public static bool IsPrimitiveType(Type type)
         {
             if (type.IsPrimitive || type.IsValueType || type.IsEnum) return true;
