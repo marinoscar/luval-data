@@ -10,10 +10,12 @@
     <PackageProjectUrl>https://github.com/marinoscar/luval-data</PackageProjectUrl>
     <PackageIcon>LV-Luval-Logo-200x200.png</PackageIcon>
     <RepositoryUrl>https://github.com/marinoscar/luval-data</RepositoryUrl>
-    <Version>1.1.6</Version>
-    <PackageReleaseNotes>Minor improvements to the cor</PackageReleaseNotes>
-    <AssemblyVersion>1.1.6.21358</AssemblyVersion>
-    <FileVersion>1.1.6.21358</FileVersion>
+    <Version>1.1.7</Version>
+    <PackageReleaseNotes>Documentation improvements</PackageReleaseNotes>
+    <AssemblyVersion>1.1.7.22001</AssemblyVersion>
+    <FileVersion>1.1.7.22001</FileVersion>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +32,10 @@
 
   <ItemGroup>
     <None Include="..\..\img\LV-Luval-Logo-200x200.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
