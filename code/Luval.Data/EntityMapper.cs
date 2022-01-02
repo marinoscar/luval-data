@@ -13,16 +13,31 @@ using System.Text;
 
 namespace Luval.Data
 {
+    /// <summary>
+    /// Provides methods to map entities
+    /// </summary>
     public static class EntityMapper
     {
         private static readonly ConcurrentDictionary<Type, Dictionary<string, PropertyInfo>> _mappedValues = new ConcurrentDictionary<Type, Dictionary<string, PropertyInfo>>();
         private static readonly ConcurrentDictionary<Type, EntityMetadata> _entityMetadata = new ConcurrentDictionary<Type, EntityMetadata>();
 
-        public static T FromDataRecord<T>(IDataRecord record)
+        /// <summary>
+        /// Creates and loads the data into a new entity
+        /// </summary>
+        /// <typeparam name="TEntity">The entity <see cref="Type"/> to work with</typeparam>
+        /// <param name="record">The <see cref="IDataRecord"/> containing the data</param>
+        /// <returns>A new typed entity</returns>
+        public static TEntity FromDataRecord<TEntity>(IDataRecord record)
         {
-            return (T)Convert.ChangeType(FromDataRecord(record, typeof(T)), typeof(T));
+            return (TEntity)Convert.ChangeType(FromDataRecord(record, typeof(TEntity)), typeof(TEntity));
         }
 
+        /// <summary>
+        /// Creates and loads the data into a new entity
+        /// </summary>
+        /// <param name="record">The <see cref="IDataRecord"/> containing the data</param>
+        /// <param name="entityType">The <see cref="Type"/> of the entity to create</param>
+        /// <returns>A new object entity</returns>
         public static object FromDataRecord(IDataRecord record, Type entityType)
         {
             var entity = Activator.CreateInstance(entityType);
@@ -31,6 +46,16 @@ namespace Luval.Data
                 AssignFieldValueToEntity(record.GetName(i), ref entity, record.GetValue(i));
             }
             return entity;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="IDataRecord"/> from an entity
+        /// </summary>
+        /// <param name="entity">The entity <see cref="object"/> to extract the data from</param>
+        /// <returns></returns>
+        public static IDataRecord ToDataRecord(object entity)
+        {
+            return new DictionaryDataRecord(ToDictionary(entity));
         }
 
         private static void AssignFieldValueToEntity(string fieldName, ref object entity, object value)
@@ -108,11 +133,6 @@ namespace Luval.Data
                     _mappedValues[type].Add(filedName, property);
             }
             _mappedValues[type][filedName] = property;
-        }
-
-        public static IDataRecord ToDataRecord(object entity)
-        {
-            return new DictionaryDataRecord(ToDictionary(entity));
         }
 
         private static EntityMetadata GetEntityMetadata(Type entityType)

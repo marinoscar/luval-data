@@ -13,16 +13,21 @@ using System.Text;
 
 namespace Luval.Data
 {
+    /// <summary>
+    /// Represents an implementation of <see cref="IDataRecordMapper"/> using reflection
+    /// </summary>
     public class ReflectionDataRecordMapper : IDataRecordMapper
     {
         private static readonly ConcurrentDictionary<Type, Dictionary<string, PropertyInfo>> _mappedValues = new ConcurrentDictionary<Type, Dictionary<string, PropertyInfo>>();
         private static readonly ConcurrentDictionary<Type, EntityMetadata> _entityMetadata = new ConcurrentDictionary<Type, EntityMetadata>();
 
+        /// <inheritdoc/>
         public T FromDataRecord<T>(IDataRecord record)
         {
             return (T)Convert.ChangeType(FromDataRecord(record, typeof(T)), typeof(T));
         }
 
+        /// <inheritdoc/>
         public object FromDataRecord(IDataRecord record, Type entityType)
         {
             var entity = Activator.CreateInstance(entityType);
@@ -31,6 +36,12 @@ namespace Luval.Data
                 AssignFieldValueToEntity(record.GetName(i), ref entity, record.GetValue(i));
             }
             return entity;
+        }
+
+        /// <inheritdoc/>
+        public IDataRecord ToDataRecord(object entity)
+        {
+            return new DictionaryDataRecord(ToDictionary(entity));
         }
 
         private void AssignFieldValueToEntity(string fieldName, ref object entity, object value)
@@ -108,11 +119,6 @@ namespace Luval.Data
                     _mappedValues[type].Add(filedName, property);
             }
             _mappedValues[type][filedName] = property;
-        }
-
-        public IDataRecord ToDataRecord(object entity)
-        {
-            return new DictionaryDataRecord(ToDictionary(entity));
         }
 
         private EntityMetadata GetEntityMetadata(Type entityType)
