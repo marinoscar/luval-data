@@ -12,15 +12,26 @@ using System.Text;
 
 namespace Luval.Data.Sql
 {
+    /// <summary>
+    /// Provides a Sql Server implementation of <see cref="IDbDialectProvider"/>
+    /// </summary>
     public class SqlServerDialectProvider : IDbDialectProvider
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="SqlServerDialectProvider"/>
+        /// </summary>
+        /// <param name="schema">The <see cref="DbTableSchema"/> to use for the creation of the commands</param>
         public SqlServerDialectProvider(DbTableSchema schema)
         {
             Schema = schema;
         }
 
+        /// <summary>
+        /// Gets the <see cref="DbTableSchema"/> to use
+        /// </summary>
         public DbTableSchema Schema { get; private set; }
 
+        /// <inheritdoc/>
         public string GetCreateCommand(IDataRecord record, bool includeChildren)
         {
             return GetCreateCommand(Schema, record, includeChildren);
@@ -41,7 +52,7 @@ namespace Luval.Data.Sql
             return sw.ToString();
         }
 
-        public void GetCreateCommandForChildren(StringWriter sw, TableReference reference, IDataRecord record)
+        private void GetCreateCommandForChildren(StringWriter sw, TableReference reference, IDataRecord record)
         {
             var value = record[reference.SourceColumn.PropertyName];
             if (value.IsPrimitiveType() ||
@@ -53,6 +64,7 @@ namespace Luval.Data.Sql
                 sw.Write(GetCreateCommand(reference.ReferenceTable, (IDataRecord)value, true));
         }
 
+        /// <inheritdoc/>
         public string GetDeleteCommand(IDataRecord record)
         {
             var sw = new StringWriter();
@@ -61,6 +73,7 @@ namespace Luval.Data.Sql
             return sw.ToString();
         }
 
+        /// <inheritdoc/>
         public string GetUpdateCommand(IDataRecord record)
         {
             var sw = new StringWriter();
@@ -70,6 +83,7 @@ namespace Luval.Data.Sql
             return sw.ToString();
         }
 
+        /// <inheritdoc/>
         public string GetReadCommand(IDataRecord record)
         {
             var sw = new StringWriter();
@@ -80,6 +94,7 @@ namespace Luval.Data.Sql
             return sw.ToString();
         }
 
+        /// <inheritdoc/>
         public string GetReadAllCommand()
         {
             var sw = new StringWriter();
@@ -89,6 +104,7 @@ namespace Luval.Data.Sql
             return sw.ToString();
         }
 
+        /// <inheritdoc/>
         public string GetEntityQuery<TEntity>(Expression<Func<TEntity, bool>> expression)
         {
             throw new NotImplementedException();

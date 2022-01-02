@@ -9,16 +9,37 @@ using System.Text;
 
 namespace Luval.Data.Sql
 {
+    /// <summary>
+    /// Provides an abstraction for the schema of a sql table
+    /// </summary>
     public class DbTableSchema
     {
 
         private static Dictionary<Type, DbTableSchema> _cache = new Dictionary<Type, DbTableSchema>();
+
+        /// <summary>
+        /// Gets or sets the <see cref="TableName"/> for the <see cref="DbTableSchema"/>
+        /// </summary>
         public TableName TableName { get; set; }
+        /// <summary>
+        /// Gets or sets the <see cref="Type"/> for the entity
+        /// </summary>
         public Type EntityType { get; set; }
+        /// <summary>
+        /// Gets or sets a <see cref="List{T}"/> of <see cref="DbColumnSchema"/>
+        /// </summary>
         public List<DbColumnSchema> Columns { get; set; }
 
+        /// <summary>
+        /// Gets or sets a <see cref="List{T}"/> of <see cref="TableReference"/>
+        /// </summary>
         public List<TableReference> References { get; set; }
 
+        /// <summary>
+        /// Creates a new instance of <see cref="DbTableSchema"/>
+        /// </summary>
+        /// <param name="type">The entity <see cref="Type"/> to use to create the schema metadata</param>
+        /// <returns>A new instance of <see cref="DbTableSchema"/></returns>
         public static DbTableSchema Create(Type type)
         {
             if (_cache.ContainsKey(type)) return _cache[type];
@@ -45,6 +66,11 @@ namespace Luval.Data.Sql
             return res;
         }
 
+        /// <summary>
+        /// Validates the references and provide the default values if required
+        /// </summary>
+        /// <param name="tableReference">The <see cref="TableReference"/> to validate</param>
+        /// <param name="parent">The reference parent <see cref="DbTableSchema"/></param>
         public static void ValidateTableRef(TableReference tableReference, DbTableSchema parent)
         {
             if (!string.IsNullOrWhiteSpace(tableReference.ReferenceTableKey)) return;
@@ -55,8 +81,12 @@ namespace Luval.Data.Sql
         }
 
 
-        
 
+        /// <summary>
+        /// Gets the <see cref="Luval.Data.Sql.TableName"/> from the entity <see cref="Type"/> metadata
+        /// </summary>
+        /// <param name="type">The entity <see cref="Type"/> to extract the metadata</param>
+        /// <returns>An instance of <see cref="Luval.Data.Sql.TableName"/></returns>
         public static TableName GetTableName(Type type)
         {
             var att = type.GetCustomAttribute<TableNameAttribute>();

@@ -8,15 +8,26 @@ using System.Text;
 
 namespace Luval.Data.Sql
 {
+    /// <summary>
+    /// Provides an implementation of Sql command formatter
+    /// </summary>
     public class SqlFormatter : IFormatProvider, ICustomFormatter
     {
         public readonly static SqlFormatter Instance = new SqlFormatter();
 
+        /// <inheritdoc/>
         public object GetFormat(Type formatType)
         {
             return this;
         }
 
+        /// <summary>
+        /// Formats the string into a sql formatted one
+        /// </summary>
+        /// <param name="format">A format string containing sql formatting specifications</param>
+        /// <param name="arg"> An object to format.</param>
+        /// <param name="formatProvider"> An object that supplies format information about the current instance</param>
+        /// <returns>A <see cref="string"/> with a sql format</returns>
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
             return Format(format, arg);
@@ -24,6 +35,12 @@ namespace Luval.Data.Sql
 
         public static readonly string[] StringComparisonOperators = new[] { "equals", "startsWith", "endsWith", "contains" };
 
+        /// <summary>
+        /// Formats the string into a sql formatted one
+        /// </summary>
+        /// <param name="format">A format string containing sql formatting specifications</param>
+        /// <param name="o"> An object to format.</param>
+        /// <returns>A <see cref="string"/> with a sql format</returns>
         public static string Format(string format, object o)
         {
             var prefix = format == "equals" ? "= " : string.Empty;

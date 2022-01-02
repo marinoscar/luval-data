@@ -10,6 +10,9 @@ using System.Text;
 
 namespace Luval.Data.Sql
 {
+    /// <summary>
+    /// Represents an implementation of <see cref="ISqlExpressionProvider"/> for Ansi SQL commands
+    /// </summary>
     public class SqlExpressionProvider : ISqlExpressionProvider
     {
 
@@ -21,7 +24,10 @@ namespace Luval.Data.Sql
 
         #region Constructors
 
-
+        /// <summary>
+        /// Creates a new instance of <see cref="SqlExpressionProvider"/>
+        /// </summary>
+        /// <param name="schema">The <see cref="DbTableSchema"/> to use in the implementation</param>
         public SqlExpressionProvider(DbTableSchema schema)
         {
             _schema = schema;
@@ -31,11 +37,13 @@ namespace Luval.Data.Sql
 
         #region Interface Members
 
+        /// <inheritdoc/>
         public string ResolveWhere<T>(Expression<Func<T, bool>> expression)
         {
             return ResolveExpression(expression.Body, typeof(T));
         }
 
+        /// <inheritdoc/>
         public string ResolveOrderBy<T>(Expression<Func<T, object>> orderBy, bool descending)
         {
             if (orderBy == null) return string.Empty;
@@ -159,8 +167,15 @@ namespace Luval.Data.Sql
         #endregion
     }
 
+    /// <summary>
+    /// Represents an implementation of <see cref="ISqlExpressionProvider"/> for Ansi SQL commands
+    /// </summary>
+    /// <typeparam name="TEntity">The entity <see cref="Type"/> to use</typeparam>
     public class SqlExpressionProvider<TEntity> : SqlExpressionProvider
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="SqlExpressionProvider{TEntity}"/>
+        /// </summary>
         public SqlExpressionProvider() : base(DbTableSchema.Create(typeof(TEntity)))
         {
 

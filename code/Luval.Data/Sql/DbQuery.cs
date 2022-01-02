@@ -10,8 +10,18 @@ using System.Text;
 
 namespace Luval.Data.Sql
 {
+    /// <summary>
+    /// Represents a query to a <see cref="Database"/> entity
+    /// </summary>
+    /// <typeparam name="TEntity">The entity <see cref="Type"/> to work with</typeparam>
+    /// <typeparam name="TKey">The <see cref="Type"/> for the entity Id</typeparam>
     public class DbQuery<TEntity, TKey> : EntityQuery<TEntity, TKey>
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="DbQuery{TEntity, TKey}"/>
+        /// </summary>
+        /// <param name="database">The target <see cref="Database"/> to query to</param>
+        /// <param name="sqlDialectProvider">The <see cref="IDbDialectProvider"/> to generate the sql commands</param>
         public DbQuery(Database database, IDbDialectProvider sqlDialectProvider)
         {
             Database = database;
@@ -31,11 +41,13 @@ namespace Luval.Data.Sql
 
         #region Implementation
 
+        /// <inheritdoc/>
         public override IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> whereExpression)
         {
             return Get(whereExpression, 0);
         }
 
+        /// <inheritdoc/>
         public override TEntity Get(TKey key, EntityLoadMode mode)
         {
             var record = EntityMapper.ToDataRecord(CreateByKey(key));
@@ -54,6 +66,7 @@ namespace Luval.Data.Sql
             return entity;
         }
 
+        /// <inheritdoc/>
         public override IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> whereExpression, int take)
         {
             var takeExpression = "";
@@ -66,11 +79,13 @@ namespace Luval.Data.Sql
             return Database.ExecuteToEntityList<TEntity>(sql);
         }
 
+        /// <inheritdoc/>
         public override IEnumerable<TEntity> Get(IQueryCommand queryCommand)
         {
             return Database.ExecuteToEntityList<TEntity>(queryCommand.Get<string>());
         }
 
+        /// <inheritdoc/>
         public override IEnumerable<IDictionary<string, object>> GetRaw(IQueryCommand queryCommand)
         {
             return Database.ExecuteToDictionaryList(queryCommand.Get<string>());
