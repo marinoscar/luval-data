@@ -11,7 +11,7 @@
     <PackageIcon>LV-Luval-Logo-200x200.png</PackageIcon>
     <RepositoryUrl>https://github.com/marinoscar/luval-data</RepositoryUrl>
     <Version>1.1.8</Version>
-    <PackageReleaseNotes>Documentation improvements</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed a bug in the IUnitOfWork extension methods</PackageReleaseNotes>
     <AssemblyVersion>1.1.8.22002</AssemblyVersion>
     <FileVersion>1.1.8.22002</FileVersion>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
