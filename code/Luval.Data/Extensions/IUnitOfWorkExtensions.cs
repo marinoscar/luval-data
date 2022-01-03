@@ -150,7 +150,7 @@ namespace Luval.Data.Extensions
         public static async Task<int> AddOrUpdateAndSaveAsync<TEntity, TKey>(this IUnitOfWork<TEntity, TKey> uow, TEntity entity, Expression<Func<TEntity, bool>> entityCondition, CancellationToken cancellationToken)
         {
             var item = await uow.Entities.Query.GetAsync(entityCondition, cancellationToken);
-            if(item != null && !item.Any())
+            if(item != null && item.Any())
                 uow.Entities.Update(entity);
             else
                 uow.Entities.Add(entity);
@@ -196,7 +196,7 @@ namespace Luval.Data.Extensions
         public static async Task<int> AddOrUpdateAndSaveAuditEntityAsync<TEntity, TKey>(this IUnitOfWork<TEntity, TKey> uow, TEntity entity, Expression<Func<TEntity, bool>> entityCondition, string userId, CancellationToken cancellationToken) where TEntity : IAuditableEntity<TKey>
         {
             var item = await uow.Entities.Query.GetAsync(entityCondition, cancellationToken);
-            if (item != null && !item.Any())
+            if (item != null && item.Any())
             {
                 entity.Id = item.First().Id;
                 entity.UtcUpdatedOn = DateTime.UtcNow;
