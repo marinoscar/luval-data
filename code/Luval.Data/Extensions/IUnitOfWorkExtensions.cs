@@ -132,7 +132,7 @@ namespace Luval.Data.Extensions
         {
             entity.UpdatedByUserId = userId;
             entity.UtcUpdatedOn = DateTime.UtcNow;
-            return AddAndSaveAsync(uow, entity, cancellationToken);
+            return UpdateAndSaveAsync(uow, entity, cancellationToken);
         }
 
         /// <summary>

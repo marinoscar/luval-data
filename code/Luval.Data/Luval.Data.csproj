@@ -10,10 +10,10 @@
     <PackageProjectUrl>https://github.com/marinoscar/luval-data</PackageProjectUrl>
     <PackageIcon>LV-Luval-Logo-200x200.png</PackageIcon>
     <RepositoryUrl>https://github.com/marinoscar/luval-data</RepositoryUrl>
-    <Version>1.1.9</Version>
+    <Version>1.1.10</Version>
     <PackageReleaseNotes>Added a method to detect changes and improved how update work on audit entities</PackageReleaseNotes>
-    <AssemblyVersion>1.1.9.22003</AssemblyVersion>
-    <FileVersion>1.1.9.22003</FileVersion>
+    <AssemblyVersion>1.1.10.22003</AssemblyVersion>
+    <FileVersion>1.1.10.22003</FileVersion>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
