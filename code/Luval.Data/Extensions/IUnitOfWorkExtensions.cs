@@ -159,6 +159,60 @@ namespace Luval.Data.Extensions
         }
 
         /// <summary>
+        /// Detects changes between an entity in the data store and a memory entity
+        /// </summary>
+        /// <typeparam name="TEntity"><see cref="Type"/> for the target entity</typeparam>
+        /// <typeparam name="TKey"><see cref="Type" /> for the target entity Id property</typeparam>
+        /// <param name="uow">The <see cref="IUnitOfWork{TEntity, TKey}"/> implementation</param>
+        /// <param name="entity">Memory entity to compare to</param>
+        /// <returns>A <see cref="Task"/> operation with a <see cref="EntityChanges{TEntity}"/> with the changes</returns>
+        public static async Task<EntityChanges<TEntity>> DetectChangesAsync<TEntity, TKey>(this IUnitOfWork<TEntity, TKey> uow, TEntity entity, Expression<Func<TEntity, bool>> entityCondition, CancellationToken cancellationToken)
+        {
+            var storeEntity = (await uow.Entities.Query.GetAsync(entityCondition, cancellationToken)).SingleOrDefault();
+            if (storeEntity == null) throw new ArgumentException("No value returned from data store", nameof(entityCondition));
+            return DetectChanges(storeEntity, entity);
+        }
+
+        /// <summary>
+        /// Detects changes between an entity in the data store and a memory entity
+        /// </summary>
+        /// <typeparam name="TEntity"><see cref="Type"/> for the target entity</typeparam>
+        /// <typeparam name="TKey"><see cref="Type" /> for the target entity Id property</typeparam>
+        /// <param name="uow">The <see cref="IUnitOfWork{TEntity, TKey}"/> implementation</param>
+        /// <param name="entity">Memory entity to compare to</param>
+        /// <returns>A <see cref="EntityChanges{TEntity}"/> with the changes</returns>
+        public static EntityChanges<TEntity> DetectChangesAsync<TEntity, TKey>(this IUnitOfWork<TEntity, TKey> uow, TEntity entity, Expression<Func<TEntity, bool>> entityCondition)
+        {
+            return DetectChangesAsync(uow, entity, entityCondition, CancellationToken.None).Result;
+        }
+
+        /// <summary>
+        /// Detects changes between an entity in the data store and a memory entity
+        /// </summary>
+        /// <typeparam name="TEntity"><see cref="Type"/> for the target entity</typeparam>
+        /// <param name="storeEntity">Entity from a data store</param>
+        /// <param name="entity">Memory entity</param>
+        /// <returns>A <see cref="EntityChanges{TEntity}"/> with the changes</returns>
+        public static EntityChanges<TEntity> DetectChanges<TEntity>(TEntity storeEntity, TEntity entity)
+        {
+            var changes = new List<EntityChange>();
+            var properties = typeof(TEntity).GetProperties();
+            foreach (var property in properties)
+            {
+                if (property.CanRead && property.CanWrite)
+                {
+                    var storeValue = property.GetValue(storeEntity);
+                    var memoryValue = property.GetValue(entity);
+                    if(storeValue != memoryValue)
+                    {
+                        changes.Add(new EntityChange(property, storeValue, memoryValue));
+                    }
+                }
+            }
+            return new EntityChanges<TEntity>(storeEntity, entity, changes);
+        }
+
+        /// <summary>
         /// Provides a simple implementation in which the method checks if a record exists by looking on the entity Id property 
         /// function if a value us found the <seealso cref="UpdateAndSaveAsync{TEntity, TKey}(IUnitOfWork{TEntity, TKey}, TEntity, CancellationToken)"/> method is called
         /// otherwise the <seealso cref="AddAndSaveAsync{TEntity, TKey}(IUnitOfWork{TEntity, TKey}, TEntity, CancellationToken)"/> method is executed
@@ -198,9 +252,12 @@ namespace Luval.Data.Extensions
             var item = await uow.Entities.Query.GetAsync(entityCondition, cancellationToken);
             if (item != null && item.Any())
             {
-                entity.Id = item.First().Id;
+                var dbEtity = item.First();
+                entity.Id = dbEtity.Id;
                 entity.UtcUpdatedOn = DateTime.UtcNow;
                 entity.UpdatedByUserId = userId;
+                entity.CreatedByUserId = dbEtity.CreatedByUserId;
+                entity.UtcCreatedOn = dbEtity.UtcCreatedOn;
                 uow.Entities.Update(entity);
             }
             else
