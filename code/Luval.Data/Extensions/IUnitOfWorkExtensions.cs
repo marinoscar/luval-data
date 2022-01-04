@@ -181,7 +181,7 @@ namespace Luval.Data.Extensions
         /// <param name="uow">The <see cref="IUnitOfWork{TEntity, TKey}"/> implementation</param>
         /// <param name="entity">Memory entity to compare to</param>
         /// <returns>A <see cref="EntityChanges{TEntity}"/> with the changes</returns>
-        public static EntityChanges<TEntity> DetectChangesAsync<TEntity, TKey>(this IUnitOfWork<TEntity, TKey> uow, TEntity entity, Expression<Func<TEntity, bool>> entityCondition)
+        public static EntityChanges<TEntity> DetectChanges<TEntity, TKey>(this IUnitOfWork<TEntity, TKey> uow, TEntity entity, Expression<Func<TEntity, bool>> entityCondition)
         {
             return DetectChangesAsync(uow, entity, entityCondition, CancellationToken.None).Result;
         }
